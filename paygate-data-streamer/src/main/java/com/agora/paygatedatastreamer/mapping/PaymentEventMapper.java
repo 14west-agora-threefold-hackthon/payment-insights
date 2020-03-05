@@ -11,7 +11,7 @@ import java.util.*;
 @Component
 public class PaymentEventMapper {
 
-    private static EasyRandom EASY_RANDOM = new EasyRandom();
+    private static final EasyRandom EASY_RANDOM = new EasyRandom();
 
     public PaymentEvent mapToPaymentEvent(PaymentEventInput paymentEventInput) {
         PaymentEvent paymentEvent = new PaymentEvent();
