@@ -87,12 +87,12 @@ public class PaygatePayloadController {
 
         HttpEntity<PaymentEvent> request = new HttpEntity<>(paymentEvent, headers);
 
-//      restTemplate.postForObject(URI.create(
-//                    "https://push-service-payment-insights.apps.threefold.x1l7.p1.openshiftapps.com/v1/emails"),
-//                    request, String.class);
-
         restTemplate.postForObject(URI.create(
-                "https://3a8ac92d.ngrok.io/v1/emails"),
-                request, String.class);
+                    "https://push-service-payment-insights.apps.threefold.x1l7.p1.openshiftapps.com/v1/emails"),
+                    request, String.class);
+
+//        restTemplate.postForObject(URI.create(
+//                "https://3a8ac92d.ngrok.io/v1/emails"),
+//                request, String.class);
     }
 }
