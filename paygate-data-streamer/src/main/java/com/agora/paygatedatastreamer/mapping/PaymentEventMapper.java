@@ -52,7 +52,7 @@ public class PaymentEventMapper {
 
         paymentEvent.setCardExpirationMonth(easyRandom.nextObject(Date.class).getMonth());
         paymentEvent.setCardExpirationYear(easyRandom.nextObject(Date.class).getYear());
-        paymentEvent.setCustomerEmail(RandomStringUtils.randomAlphabetic(20).concat("@gmail.com"));
+        paymentEvent.setCustomerEmail("bquigley@tfd.ie");
         paymentEvent.setCustomerFirstName(RandomStringUtils.randomAlphabetic(10));
         paymentEvent.setCustomerLastName(RandomStringUtils.randomAlphabetic(10));
         paymentEvent.setCustomerNumber(RandomStringUtils.randomNumeric(12));
