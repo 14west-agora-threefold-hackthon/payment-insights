@@ -7,10 +7,11 @@ import org.jeasy.random.EasyRandom;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class PaymentEventMapper {
+
+    private static EasyRandom EASY_RANDOM = new EasyRandom();
 
     public PaymentEvent mapToPaymentEvent(PaymentEventInput paymentEventInput) {
         PaymentEvent paymentEvent = new PaymentEvent();
@@ -48,15 +49,13 @@ public class PaymentEventMapper {
     }
 
     private void decoratePaymentEvent(PaymentEvent paymentEvent) {
-        EasyRandom easyRandom = new EasyRandom();
-
-        paymentEvent.setCardExpirationMonth(easyRandom.nextObject(Date.class).getMonth());
-        paymentEvent.setCardExpirationYear(easyRandom.nextObject(Date.class).getYear());
+        paymentEvent.setCardExpirationMonth(EASY_RANDOM.nextObject(Date.class).getMonth());
+        paymentEvent.setCardExpirationYear(EASY_RANDOM.nextObject(Date.class).getYear());
         paymentEvent.setCustomerEmail("bquigley@tfd.ie");
         paymentEvent.setCustomerFirstName(RandomStringUtils.randomAlphabetic(10));
         paymentEvent.setCustomerLastName(RandomStringUtils.randomAlphabetic(10));
         paymentEvent.setCustomerNumber(RandomStringUtils.randomNumeric(12));
         paymentEvent.setOwningOrg(RandomStringUtils.randomAlphanumeric(5));
-        paymentEvent.setPrice(easyRandom.nextDouble());
+        paymentEvent.setPrice(EASY_RANDOM.nextDouble());
     }
 }

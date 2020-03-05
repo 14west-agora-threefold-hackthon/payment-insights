@@ -63,7 +63,9 @@ public class PaymentEventGeneratorApplication implements CommandLineRunner {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		restTemplate.postForObject(URI.create("http://localhost:8080/ingest_payment_event"),
+		restTemplate.postForObject(URI.create("http://paygate-eventlistener-payment-insights.apps.threefold.x1l7.p1.openshiftapps.com/ingest_payment_event"),
 				request, String.class);
+
+		//restTemplate.postForObject(URI.create("http://localhost:8080/ingest_payment_event"), request, String.class);
 	}
 }
