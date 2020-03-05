@@ -30,18 +30,21 @@ public class PaymentEventMapper {
 
     private void unpackPspResponse(PaymentEventInput input, PaymentEvent event) {
         String pspResponse = input.getPaymentServiceProvider().getResponse();
-        String fieldsString = pspResponse.substring(pspResponse.indexOf('{') + 1, pspResponse.indexOf('}') - 1);
-        List<String> fields = Arrays.asList(fieldsString.split(","));
 
-        Map<String, String> fieldValues = new HashMap<>();
+        if (pspResponse.length() > 0 && pspResponse.contains("}") && pspResponse.contains("{")) {
+            String fieldsString = pspResponse.substring(pspResponse.indexOf('{') + 1, pspResponse.indexOf('}') - 1);
+            List<String> fields = Arrays.asList(fieldsString.split(","));
 
-        fields.forEach(field ->
-                fieldValues.put(
-                        field.split("=")[0].trim().replace("'", ""),
-                        field.split("=")[1].trim().replace("'", "")));
+            Map<String, String> fieldValues = new HashMap<>();
 
-        event.setReasonCode(fieldValues.get("statusCode"));
-        event.setReasonMessage(fieldValues.get("statusMessage"));
+            fields.forEach(field ->
+                    fieldValues.put(
+                            field.split("=")[0].trim().replace("'", ""),
+                            field.split("=")[1].trim().replace("'", "")));
+
+            event.setReasonCode(fieldValues.get("statusCode"));
+            event.setReasonMessage(fieldValues.get("statusMessage"));
+        }
     }
 
     private void decoratePaymentEvent(PaymentEvent paymentEvent) {
