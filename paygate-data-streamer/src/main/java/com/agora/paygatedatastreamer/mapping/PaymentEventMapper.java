@@ -1,0 +1,59 @@
+package com.agora.paygatedatastreamer.mapping;
+
+import com.agora.paygatedatastreamer.entity.PaymentEvent;
+import com.agora.paygatedatastreamer.input.PaymentEventInput;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.jeasy.random.EasyRandom;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Component
+public class PaymentEventMapper {
+
+    public PaymentEvent mapToPaymentEvent(PaymentEventInput paymentEventInput) {
+        PaymentEvent paymentEvent = new PaymentEvent();
+        paymentEvent.setDateAndTime(paymentEventInput.getTimestamp());
+        paymentEvent.setOrderId(paymentEventInput.getReference());
+        paymentEvent.setPaymentProcessor(paymentEventInput.getPaymentServiceProvider().getName());
+        paymentEvent.setPaymentType("card");
+        paymentEvent.setTransactionStatus(paymentEventInput.getTransactionStatus());
+        paymentEvent.setTransactionType(paymentEventInput.getTransactionType());
+
+        unpackPspResponse(paymentEventInput, paymentEvent);
+
+        decoratePaymentEvent(paymentEvent);
+
+        return paymentEvent;
+    }
+
+    private void unpackPspResponse(PaymentEventInput input, PaymentEvent event) {
+        String pspResponse = input.getPaymentServiceProvider().getResponse();
+        String fieldsString = pspResponse.substring(pspResponse.indexOf('{') + 1, pspResponse.indexOf('}') - 1);
+        List<String> fields = Arrays.asList(fieldsString.split(","));
+
+        Map<String, String> fieldValues = new HashMap<>();
+
+        fields.forEach(field ->
+                fieldValues.put(
+                        field.split("=")[0].trim().replace("'", ""),
+                        field.split("=")[1].trim().replace("'", "")));
+
+        event.setReasonCode(fieldValues.get("statusCode"));
+        event.setReasonMessage(fieldValues.get("statusMessage"));
+    }
+
+    private void decoratePaymentEvent(PaymentEvent paymentEvent) {
+        EasyRandom easyRandom = new EasyRandom();
+
+        paymentEvent.setCardExpirationMonth(easyRandom.nextObject(Date.class).getMonth());
+        paymentEvent.setCardExpirationYear(easyRandom.nextObject(Date.class).getYear());
+        paymentEvent.setCustomerEmail(RandomStringUtils.randomAlphabetic(20).concat("@gmail.com"));
+        paymentEvent.setCustomerFirstName(RandomStringUtils.randomAlphabetic(10));
+        paymentEvent.setCustomerLastName(RandomStringUtils.randomAlphabetic(10));
+        paymentEvent.setCustomerNumber(RandomStringUtils.randomNumeric(12));
+        paymentEvent.setOwningOrg(RandomStringUtils.randomAlphanumeric(5));
+        paymentEvent.setPrice(easyRandom.nextDouble());
+    }
+}
